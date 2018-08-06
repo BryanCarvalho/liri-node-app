@@ -1,15 +1,13 @@
 require("dotenv").config();
 
-console.log("hello");
+var keys = require('./keys');
+var fs = require('fs');
+var request = require(`request`);
+var Spotify = require('node-spotify-api');
 
-let keys = require('./keys');
-let fs = require('fs');
-let request = require(`request`);
-let Spotify = require('node-spotify-api');
-
-let command = process.argv[2];
-let content = process.argv[3];
-let spotify = new Spotify(keys.spotify);
+var command = process.argv[2];
+var content = process.argv[3];
+var spotify = new Spotify(keys.spotify);
 
 if (command === "spotify-this-song") {
     spotifyRun();
@@ -25,7 +23,7 @@ else if (command === "do-what-it-says") {
 
 function spotifyRun() {
     if (!content) {
-        content = "The Sign";
+        content = "Ace of Base";
     }
 
     spotify.search({ type: "track", query: content, limit: 1 }, function (err, data) {
@@ -36,9 +34,9 @@ function spotifyRun() {
         data = JSON.parse(JSON.stringify(data));
 
         console.log(
-            `Artists: ${data.tracks.items[0].album.artists[0].name}`,
-            `\nTrack: ${data.tracks.items[0].name}`,
-            `\nPreview: ${data.tracks.items[0].preview_url}`,
+            `Artist(s): ${data.tracks.items[0].album.artists[0].name}`,
+            `\nSong Name: ${data.tracks.items[0].name}`,
+            `\nPreview Link: ${data.tracks.items[0].preview_url}`,
             `\nAlbum: ${data.tracks.items[0].album.name}`
         );
     });
@@ -49,7 +47,7 @@ function omdbRun() {
         content = "Mr.Nobody";
     }
 
-    let omdb = `http://www.omdbapi.com/?t="${content}"&y=&plot=short&apikey=trilogy`;
+    var omdb = `http://www.omdbapi.com/?t="${content}"&y=&plot=short&apikey=trilogy`;
 
     request(omdb, function (error, response, body) {
         if (!error && response.statusCode === 200) {
